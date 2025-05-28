@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ARSAFA Lending Management</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    .due-tag {
+      font-size: 14px;
+      padding: 3px 8px;
+      border-radius: 4px;
+    }
+    .due-tag.due { background-color: #ffc107; color: #000; }
+    .due-tag.clear { background-color: #28a745; color: white; }
+  </style>
+</head>
+<body class="bg-light">
+
+  <!-- Navbar Start -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">ARSAFA Solution</a>
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item"><a class="nav-link" href="1.html">Dashboard</a></li>
+        <li class="nav-item"><a class="nav-link active" href="2.html">Inventory</a></li>
+        <li class="nav-item"><a class="nav-link" href="3.html">Sales</a></li>
+        <li class="nav-item"><a class="nav-link" href="4.html">Invoice Generator</a></li>
+        <li class="nav-item"><a class="nav-link" href="5.html">Invoices</a></li>
+        <li class="nav-item"><a class="nav-link" href="6.html">Customers</a></li>
+        <li class="nav-item"><a class="nav-link" href="7.html">Lending</a></li>
+      </ul>
+    </div>
+  </nav>
+  <!-- Navbar End -->
+
+  <div class="container mt-5">
+    <h2 class="text-center mb-4">Customer Lending Management</h2>
+
+    <!-- Add New Lending Record -->
+    <div class="card mb-4 shadow-sm">
+      <div class="card-header bg-primary text-white">Add Lending Record</div>
+      <div class="card-body">
+        <form class="row g-3" id="lendingForm">
+          <div class="col-md-4">
+            <input type="text" class="form-control" placeholder="Customer Name" id="customerName" required>
+          </div>
+          <div class="col-md-3">
+            <input type="number" class="form-control" placeholder="Amount Due (৳)" min="1" id="amountDue" required>
+          </div>
+          <div class="col-md-3">
+            <input type="date" class="form-control" placeholder="Due Date" id="dueDate" required>
+          </div>
+          <div class="col-md-2">
+            <button type="submit" class="btn btn-success w-100">Add</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Lending Records Table -->
+    <div class="card shadow-sm">
+      <div class="card-header bg-secondary text-white">Lending Records</div>
+      <div class="card-body p-0">
+        <table class="table table-bordered text-center mb-0">
+          <thead class="table-light">
+            <tr>
+              <th>#</th>
+              <th>Customer</th>
+              <th>Amount (৳)</th>
+              <th>Due Date</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="lendingTableBody">
+            <!-- Dynamic rows will be rendered here -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Lending records array
+    let lendingRecords = [
+      { customer: "Hasan Ali", amount: 1200, due: "2025-06-05", status: "Due" },
+      { customer: "Jannatul Ferdous", amount: 500, due: "2025-05-20", status: "Cleared" },
+      { customer: "Rahim Uddin", amount: 800, due: "2025-07-10", status: "Due" },
+      { customer: "Sadia Akter", amount: 300, due: "2025-06-15", status: "Due" }
+    ];
+
+    function renderLendingTable() {
+      const tbody = document.getElementById('lendingTableBody');
+      tbody.innerHTML = "";
+      lendingRecords.forEach((rec, idx) => {
+        tbody.innerHTML += `
+          <tr>
+            <td>${idx + 1}</td>
+            <td>${rec.customer}</td>
+            <td>${rec.amount}</td>
+            <td>${rec.due}</td>
+            <td>
+              <span class="due-tag ${rec.status === "Due" ? "due" : "clear"}">${rec.status === "Due" ? "Due" : "Cleared"}</span>
+            </td>
+            <td>
+              ${rec.status === "Due" ? `
+                <button class="btn btn-sm btn-primary" onclick="sendReminder(${idx})">Send Reminder</button>
+                <button class="btn btn-sm btn-success" onclick="markPaid(${idx})">Mark Paid</button>
+              ` : `
+                <button class="btn btn-sm btn-outline-secondary" disabled>Reminder Sent</button>
+                <button class="btn btn-sm btn-outline-success" disabled>Paid</button>
+              `}
+            </td>
+          </tr>
+        `;
+      });
+    }
+
+    // Add new lending record
+    document.getElementById('lendingForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const customer = document.getElementById('customerName').value.trim();
+      const amount = document.getElementById('amountDue').value;
+      const due = document.getElementById('dueDate').value;
+      if (customer && amount && due) {
+        lendingRecords.push({ customer, amount, due, status: "Due" });
+        renderLendingTable();
+        this.reset();
+      }
+    });
+
+    // Mark as paid
+    window.markPaid = function(idx) {
+      lendingRecords[idx].status = "Cleared";
+      renderLendingTable();
+    };
+
+    // Send reminder (for demo, just disables the button)
+    window.sendReminder = function(idx) {
+      alert("Reminder sent to " + lendingRecords[idx].customer + "!");
+    };
+
+    // Initial render
+    renderLendingTable();
+  </script>
+</body>
+</html>
