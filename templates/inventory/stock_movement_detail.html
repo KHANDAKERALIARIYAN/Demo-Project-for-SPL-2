@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Stock Movement Details - ERP System{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Stock Movement Details</h1>
+    <div>
+        <a href="{% url 'inventory:stock_movement_update' object.id %}" class="btn btn-warning">
+            <i class="fas fa-edit"></i> Edit
+        </a>
+        <a href="{% url 'inventory:stock_movement_delete' object.id %}" class="btn btn-danger delete-confirm">
+            <i class="fas fa-trash"></i> Delete
+        </a>
+        <a href="{% url 'inventory:stock_movement_list' %}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Back to List
+        </a>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <table class="table">
+            <tr>
+                <th>Date:</th>
+                <td>{{ object.date|date:"F j, Y" }}</td>
+            </tr>
+            <tr>
+                <th>Product:</th>
+                <td>
+                    <a href="{% url 'inventory:product_detail' object.product.id %}">
+                        {{ object.product.name }}
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <th>Movement Type:</th>
+                <td>
+                    <span class="badge {% if object.movement_type == 'in' %}bg-success{% else %}bg-danger{% endif %}">
+                        {{ object.movement_type|title }}
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <th>Quantity:</th>
+                <td>{{ object.quantity }}</td>
+            </tr>
+            <tr>
+                <th>Reference Number:</th>
+                <td>{{ object.reference_number }}</td>
+            </tr>
+            <tr>
+                <th>Notes:</th>
+                <td>{{ object.notes|default:"No notes available" }}</td>
+            </tr>
+            <tr>
+                <th>Created At:</th>
+                <td>{{ object.created_at|date:"F j, Y H:i" }}</td>
+            </tr>
+            <tr>
+                <th>Last Updated:</th>
+                <td>{{ object.updated_at|date:"F j, Y H:i" }}</td>
+            </tr>
+        </table>
+    </div>
+</div>
+{% endblock %} 

@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Delete Stock Movement - ERP System{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Delete Stock Movement</h1>
+    <a href="{% url 'inventory:stock_movement_list' %}" class="btn btn-secondary">
+        <i class="fas fa-arrow-left"></i> Back to List
+    </a>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <div class="alert alert-danger">
+            <h4 class="alert-heading">Warning!</h4>
+            <p>Are you sure you want to delete this stock movement?</p>
+            <hr>
+            <p class="mb-0">
+                This will affect the product's stock quantity. This action cannot be undone.
+            </p>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Movement Details</h5>
+            </div>
+            <div class="card-body">
+                <table class="table">
+                    <tr>
+                        <th>Date:</th>
+                        <td>{{ object.date|date:"F j, Y" }}</td>
+                    </tr>
+                    <tr>
+                        <th>Product:</th>
+                        <td>{{ object.product.name }}</td>
+                    </tr>
+                    <tr>
+                        <th>Type:</th>
+                        <td>
+                            <span class="badge {% if object.movement_type == 'in' %}bg-success{% else %}bg-danger{% endif %}">
+                                {{ object.movement_type|title }}
+                            </span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Quantity:</th>
+                        <td>{{ object.quantity }}</td>
+                    </tr>
+                    <tr>
+                        <th>Reference:</th>
+                        <td>{{ object.reference_number }}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <form method="post">
+            {% csrf_token %}
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                <a href="{% url 'inventory:stock_movement_list' %}" class="btn btn-secondary me-md-2">
+                    <i class="fas fa-times"></i> Cancel
+                </a>
+                <button type="submit" class="btn btn-danger">
+                    <i class="fas fa-trash"></i> Delete Movement
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %} 

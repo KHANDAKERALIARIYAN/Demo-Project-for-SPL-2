@@ -1,0 +1,158 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    {% if form.instance.pk %}Edit{% else %}Add{% endif %} Product - ERP System
+{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>{% if form.instance.pk %}Edit{% else %}Add{% endif %} Product</h1>
+    <a href="{% url 'inventory:product_list' %}" class="btn btn-secondary">
+        <i class="fas fa-arrow-left"></i> Back to List
+    </a>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <form method="post" class="needs-validation" novalidate>
+            {% csrf_token %}
+            
+            {% if form.non_field_errors %}
+            <div class="alert alert-danger">
+                {% for error in form.non_field_errors %}
+                    {{ error }}
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="{{ form.name.id_for_label }}" class="form-label">Name</label>
+                    <input type="text" name="{{ form.name.name }}" id="{{ form.name.id_for_label }}" 
+                           class="form-control {% if form.name.errors %}is-invalid{% endif %}"
+                           value="{{ form.name.value|default:'' }}" required>
+                    {% if form.name.errors %}
+                    <div class="invalid-feedback">
+                        {% for error in form.name.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label for="{{ form.category.id_for_label }}" class="form-label">Category</label>
+                    <select name="{{ form.category.name }}" id="{{ form.category.id_for_label }}"
+                            class="form-select {% if form.category.errors %}is-invalid{% endif %}" required>
+                        <option value="">Select a category</option>
+                        {% for value, label in form.category.field.choices %}
+                        <option value="{{ value }}" {% if form.category.value == value %}selected{% endif %}>
+                            {{ label }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                    {% if form.category.errors %}
+                    <div class="invalid-feedback">
+                        {% for error in form.category.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="{{ form.description.id_for_label }}" class="form-label">Description</label>
+                <textarea name="{{ form.description.name }}" id="{{ form.description.id_for_label }}"
+                          class="form-control {% if form.description.errors %}is-invalid{% endif %}"
+                          rows="3">{{ form.description.value|default:'' }}</textarea>
+                {% if form.description.errors %}
+                <div class="invalid-feedback">
+                    {% for error in form.description.errors %}
+                        {{ error }}
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="{{ form.quantity.id_for_label }}" class="form-label">Quantity</label>
+                    <input type="number" name="{{ form.quantity.name }}" id="{{ form.quantity.id_for_label }}"
+                           class="form-control {% if form.quantity.errors %}is-invalid{% endif %}"
+                           value="{{ form.quantity.value|default:'0' }}" min="0" required>
+                    {% if form.quantity.errors %}
+                    <div class="invalid-feedback">
+                        {% for error in form.quantity.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label for="{{ form.unit_price.id_for_label }}" class="form-label">Unit Price</label>
+                    <div class="input-group">
+                        <span class="input-group-text">$</span>
+                        <input type="number" name="{{ form.unit_price.name }}" id="{{ form.unit_price.id_for_label }}"
+                               class="form-control {% if form.unit_price.errors %}is-invalid{% endif %}"
+                               value="{{ form.unit_price.value|default:'0.00' }}" min="0" step="0.01" required>
+                    </div>
+                    {% if form.unit_price.errors %}
+                    <div class="invalid-feedback">
+                        {% for error in form.unit_price.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="{{ form.status.id_for_label }}" class="form-label">Status</label>
+                <select name="{{ form.status.name }}" id="{{ form.status.id_for_label }}"
+                        class="form-select {% if form.status.errors %}is-invalid{% endif %}" required>
+                    {% for value, label in form.status.field.choices %}
+                    <option value="{{ value }}" {% if form.status.value == value %}selected{% endif %}>
+                        {{ label }}
+                    </option>
+                    {% endfor %}
+                </select>
+                {% if form.status.errors %}
+                <div class="invalid-feedback">
+                    {% for error in form.status.errors %}
+                        {{ error }}
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Save Product
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Form validation
+    (function () {
+        'use strict'
+        var forms = document.querySelectorAll('.needs-validation')
+        Array.prototype.slice.call(forms).forEach(function (form) {
+            form.addEventListener('submit', function (event) {
+                if (!form.checkValidity()) {
+                    event.preventDefault()
+                    event.stopPropagation()
+                }
+                form.classList.add('was-validated')
+            }, false)
+        })
+    })()
+</script>
+{% endblock %} 
